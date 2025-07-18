@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weekly Workout Schedule</title>
+</head>
+<body>
+    <h1>Plan Your Weekly Workouts</h1>
+
+    <form method="POST">
+        {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+            <label for="{{ day }}">{{ day }}:</label><br>
+            <input type="text" id="{{ day }}" name="{{ day.lower() }}" placeholder="Enter workout"><br><br>
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if workouts %}
+        <h2>Your Submitted Workouts:</h2>
+        <ul>
+        {% for day, workout in workouts.items() %}
+            <li><strong>{{ day }}:</strong> {{ workout }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
