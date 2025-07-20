@@ -1,0 +1,33 @@
+/* style.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+}
+
+h1 {
+    color: #0d6efd;  /* Bootstrap primary blue */
+}
+
+.lead {
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.btn-primary {
+    border-radius: 12px;
+}
+
+.btn-success {
+    border-radius: 12px;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+input.form-control {
+    border-radius: 8px;
+}
+
+label.form-label {
+    font-weight: bold;
+}
