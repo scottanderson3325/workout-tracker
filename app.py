@@ -14,10 +14,18 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize db (don't re-assign!)
 db.init_app(app)
 
+# Home Page
 @app.route('/')
 def home():
     return render_template('home.html')
 
+# View Workout Page
+@app.route('/view/<int:workout_id>')
+def view_workout(workout_id):
+    workout = Workout.query.get_or_404(workout_id)
+    return render_template('view_workout.html', workout=workout)
+
+# Schedule Page
 @app.route('/schedule', methods=['GET', 'POST'])
 def schedule():
     if request.method == 'POST':
