@@ -31,25 +31,46 @@ def schedule():
     if request.method == 'POST':
         name = request.form.get('name')
         date_str = request.form.get('date')
-        repeat_weekly = bool(request.form.get('repeat_weekly'))
+        repeat_weekly = bool(request.form.get('repeat_weekly'))  # "on" becomes True, None becomes False
+        repeat_weeks = int(request.form.get('repeat_weeks') or 1)  # defaults to 1 if not set
 
         if name and date_str:
             workout_date = datetime.strptime(date_str, "%Y-%m-%d").date()
             day_of_week = workout_date.strftime('%A')
+            
+            if repeat_weekly:
+                for i in range(repeat_weeks):
+                    repeated_date = workout_date + timedelta(weeks=i)
+                    day_of_week = repeated_date.strftime('%A')
 
-            new_workout = Workout(
-                name=name,
-                date=workout_date,
-                day_of_week=day_of_week,
-                repeat_weekly=repeat_weekly
-            )
-            db.session.add(new_workout)
-            db.session.commit()
-            return redirect('/schedule')
+                    new_workout = Workout(
+                        name=name,
+                        date=repeated_date,
+                        day_of_week=day_of_week,
+                        repeat_weekly=True
+                    )
+                    db.session.add(new_workout)
+            else:
+                # Just one workout, no repeats
+                new_workout = Workout(
+                    name=name,
+                    date=workout_date,
+                    day_of_week=day_of_week,
+                    repeat_weekly=False
+                )
+                db.session.add(new_workout)
 
-    # Get current week (Sunday–Saturday)
+
+            db.session.commit() # Commit once after
+            return redirect('/schedule') # Redirect once, after commit
+
+    # Handling week navigation
+    week_offset = int(request.args.get('week_offset',0))
+    
+    # Adjust the start of the week based on the offset
     today = datetime.today().date()
     start_of_week = today - timedelta(days=today.weekday() + 1 if today.weekday() < 6 else 0)
+    start_of_week += timedelta(weeks=week_offset)
     week_dates = [start_of_week + timedelta(days=i) for i in range(7)]
 
     # Get workouts in current week
@@ -60,7 +81,13 @@ def schedule():
     for workout in workouts:
         week_schedule[workout.day_of_week].append(workout)
 
-    return render_template('schedule.html', week_schedule=week_schedule)
+    return render_template(
+        'schedule.html',
+        week_schedule=week_schedule,
+        start_of_week=start_of_week,
+        end_of_week=week_dates[-1],
+        week_offset=week_offset
+    )
 
 if __name__ == '__main__':
     with app.app_context():
