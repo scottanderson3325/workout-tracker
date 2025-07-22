@@ -1,3 +1,40 @@
+# Changelog
+
+---
+
+## [2025-07-22] Exercise Model + Seeding Test Data
+
+### Added
+- Defined SQLAlchemy `Exercise` model in `models.py` with the following fields:
+  - `id`: Primary key
+  - `name`: Unique exercise name
+  - `instructions`: Text description of how to perform the exercise
+  - `video_url`: Optional link to a video demonstration
+- Verified model creation using `flask shell` and `db.create_all()`
+- Manually added 8 exercises via Flask shell:
+  - Push-Up
+  - Barbell Front Squat
+  - Dumbbell Lunges
+  - Dumbbell Bench
+  - Barbell Row
+  - Weighted Pull-Up
+  - Barbell Deadlift
+  - Barbell RDL
+
+### Notes
+- Exercise model is intentionally simplified for now — no equipment, muscle groups, or weight info yet.
+- Video URLs used are YouTube links for demo purposes.
+- `name` field is unique to prevent duplicates.
+
+### Status
+✅ Completed
+
+### Related Files
+- `models.py`
+- `workouts.db` (new table: `exercise`)
+
+---
+
 ## [2025-07-22] Initial Schedule & View Workout Routing
 
 ### Added
@@ -20,6 +57,7 @@
 ### Related Files
 - `app.py`
 
+---
 
 ## [2025-07-21] Database Model: Workout
 
@@ -42,6 +80,7 @@
 ### Related Files
 - `models.py`
 
+---
 
 ## [2025-07-21] Utility Script: View Saved Workouts
 
@@ -56,6 +95,7 @@
 ### Related Files
 - `view_db.py`
 
+---
 
 ## [2025-07-21] Utility Script: Clear All Workouts
 
@@ -70,6 +110,7 @@
 ### Related Files
 - `clear_db.py`
 
+---
 
 ## [2025-07-21] Home Page Template
 
@@ -89,6 +130,7 @@
 - `templates/home.html`
 - `static/style.css`
 
+---
 
 ## [2025-07-21] Weekly Schedule Page Template
 
@@ -113,6 +155,7 @@
 - `templates/schedule.html`
 - `static/style.css`
 
+---
 
 ## [2025-07-21] Workout Detail Page Template
 
@@ -132,6 +175,7 @@
 ### Related Files
 - `templates/view_workout.html`
 
+---
 
 ## [2025-07-21] Custom Stylesheet for Theming
 
@@ -153,6 +197,7 @@
 ### Related Files
 - `static/style.css`
 
+---
 
 ## [2025-07-21] GitHub Project: Completed Issues Sync
 
@@ -198,7 +243,7 @@
 ### Source
 - Screenshot reference: `Screenshot 2025-07-21 at 9.20.26 PM.png`
 
-
+---
 
 ## [2025-07-21] UI Validation: Screenshots of Functional Pages
 
@@ -231,4 +276,3 @@
   - `Screenshot 2025-07-21 at 9.21.18 PM.png` (Home)
   - `Screenshot 2025-07-21 at 9.21.27 PM.png` (Schedule)
   - `Screenshot 2025-07-21 at 9.21.35 PM.png` (Workout View)
-

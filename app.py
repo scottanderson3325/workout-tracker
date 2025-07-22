@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from models import db, Workout
+from models import db, Workout, Exercise
 from datetime import datetime, timedelta
 
 import os
@@ -88,6 +88,11 @@ def schedule():
         end_of_week=week_dates[-1],
         week_offset=week_offset
     )
+    
+@app.route('/exercises')
+def view_exercises():
+    exercises = Exercise.query.all()
+    return render_template('exercises.html', exercises=exercises)
 
 if __name__ == '__main__':
     with app.app_context():
