@@ -20,5 +20,10 @@ class Exercise(db.Model):
     instructions = db.Column(db.Text, nullable=True)
     video_url = db.Column(db.String(255), nullable=True)
 
+    primary_muscle = db.Column(db.String(100), nullable=False)
+    secondary_muscles = db.Column(db.String(255), nullable=True)   # comma-separated
+    stabilizers = db.Column(db.String(255), nullable=True)         # comma-separated
+
     def __repr__(self):
         return f"<Exercise {self.name}>"
+    
