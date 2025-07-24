@@ -27,3 +27,16 @@ class Exercise(db.Model):
     def __repr__(self):
         return f"<Exercise {self.name}>"
     
+class WorkoutExercise(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    workout_id = db.Column(db.Integer, db.ForeignKey('workout.id'), nullable=False)
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=False)
+
+    set_number = db.Column(db.Integer)
+    reps = db.Column(db.Integer)
+    weight_used = db.Column(db.Float)
+    order = db.Column(db.Integer)  # for UI reordering (optional)
+
+    exercise = db.relationship('Exercise')  # so you can do .exercise.name
+
+    

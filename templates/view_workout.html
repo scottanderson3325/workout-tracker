@@ -16,9 +16,41 @@
     <div class="card p-4">
         <h2 class="mb-3">💪 {{ workout.name }}</h2>
 
+        <!-- Edit / Save button -->
+        <div class="text-end mb-3">
+            <button id="editBtn" class="btn btn-primary">Edit</button>
+            <button id="saveBtn" class="btn btn-success d-none">Save</button>
+        </div>
+
+
         <p><strong>Date:</strong> {{ workout.date.strftime('%A, %B %d, %Y') }}</p>
 
         <p><strong>Repeats Weekly:</strong> {{ 'Yes' if workout.repeat_weekly else 'No' }}</p>
+
+        <h4>Exercises in this Workout:</h4>
+        <ul>
+            {% for we in workout_exercises %}
+                <li>{{ we.exercise.name }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Add Exercise UI (visible in Edit mode) -->
+        <div id="addExerciseSection" class="d-none mt-4">
+            <h5>Add Exercise</h5>
+            <input type="text" id="exerciseSearch" class="form-control" placeholder="Search for an exercise...">
+            <div id="exerciseResults" class="mt-2">
+                {% for exercise in all_exercises %}
+                    <button type="button" class="btn btn-outline-secondary btn-sm d-block mb-1 exercise-option" data-id="{{ exercise.id }}">
+                        {{ exercise.name }}
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <form id="saveForm" action="{{ url_for('add_exercises_to_workout', workout_id=workout.id) }}" method="POST" class="d-none">
+            <input type="hidden" name="exercise_ids" id="selectedExercises">
+        </form>
+
 
         <div class="mt-4">
             <!-- No Edit button at all -->
@@ -26,6 +58,51 @@
         </div>
     </div>
 </div>
+
+<script>
+// Get references to key UI elements by their IDs
+let editBtn = document.getElementById('editBtn');       // The "Edit" button
+let saveBtn = document.getElementById('saveBtn');       // The "Save" button
+let addSection = document.getElementById('addExerciseSection');  // Section where you can add exercises
+let saveForm = document.getElementById('saveForm');     // Hidden form used to submit selected exercises
+let selectedExerciseIds = [];                           // Stores the exercise IDs selected by the user
+
+// When user clicks the "Edit" button:
+editBtn.addEventListener('click', () => {
+    // Hide the Edit button
+    editBtn.classList.add('d-none');
+    // Show the Save button
+    saveBtn.classList.remove('d-none');
+    // Reveal the Add Exercise section
+    addSection.classList.remove('d-none');
+    // Reveal the Save form (used when "Save" is clicked)
+    saveForm.classList.remove('d-none');
+});
+
+// When user clicks the "Save" button:
+saveBtn.addEventListener('click', () => {
+    // Convert selected exercise IDs into a JSON string and put them into the hidden input
+    document.getElementById('selectedExercises').value = JSON.stringify(selectedExerciseIds);
+    // Submit the form to the backend
+    saveForm.submit();
+});
+
+// Enable each exercise button to be selectable
+document.querySelectorAll('.exercise-option').forEach(button => {
+    button.addEventListener('click', () => {
+        const exId = button.dataset.id;  // Get the exercise ID from the button's data-id attribute
+
+        // If this exercise hasn't already been selected, add it
+        if (!selectedExerciseIds.includes(exId)) {
+            selectedExerciseIds.push(parseInt(exId));
+
+            // Visually indicate that this button is selected
+            button.classList.replace('btn-outline-secondary', 'btn-success');
+            button.textContent += ' ✓';  // Add a checkmark
+        }
+    });
+});
+</script>
 
 </body>
 </html>

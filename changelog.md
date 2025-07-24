@@ -2,6 +2,14 @@
 
 ---
 
+## [2025-07-23] Add exercises to a workout from the View page
+
+- Implemented front-end JavaScript to toggle edit/save UI in `view_workout.html`
+- Added hidden form to submit selected exercise IDs as JSON
+- Created `/view/<int:workout_id>/add_exercises` POST route in `app.py` to process and store associations in `WorkoutExercise` table
+- Validated end-to-end data flow and persistence
+- Verified UI and DB correctness with console logs and query checks
+
 ## [2025-07-22] Exercise Model + Seeding Test Data
 
 ### Added
