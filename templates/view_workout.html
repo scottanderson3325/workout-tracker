@@ -27,12 +27,65 @@
 
         <p><strong>Repeats Weekly:</strong> {{ 'Yes' if workout.repeat_weekly else 'No' }}</p>
 
-        <h4>Exercises in this Workout:</h4>
-        <ul>
-            {% for we in workout_exercises %}
-                <li>{{ we.exercise.name }}</li>
-            {% endfor %}
-        </ul>
+        <!-- Editable Exercise Table -->
+        <form id="setsForm" action="{{ url_for('update_sets', workout_id=workout.id) }}" method="POST" class="d-none">
+            <h4>Exercises in this Workout:</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Sets</th>
+                        <th>Reps</th>
+                        <th>Weight (lbs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for we in workout_exercises %}
+                    <tr>
+                        <td>{{ we.exercise.name }}</td>
+                        <td>
+                            <input 
+                                type="number" 
+                                name="set_number_{{ we.id }}" 
+                                class="form-control" 
+                                value="{{ we.set_number or '' }}">
+                        </td>
+                        <td>
+                            <input 
+                                type="number" 
+                                name="reps_{{ we.id }}" 
+                                class="form-control" 
+                                value="{{ we.reps or '' }}">
+                        </td>
+                        <td>
+                            <input 
+                                type="number" 
+                                name="weight_used_{{ we.id }}" 
+                                class="form-control" 
+                                value="{{ we.weight_used or '' }}" 
+                                step="0.5">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-success">Save Changes</button>
+        </form>
+
+        <!-- Static read-only display of workout exercises -->
+        <div id="exerciseList">
+            <h4>Exercises in this Workout:</h4>
+            <ul class="list-group">
+                {% for we in workout_exercises %}
+                <li class="list-group-item">
+                    <strong>{{ we.exercise.name }}</strong>
+                    {% if we.set_number and we.reps and we.weight_used %}
+                        — {{ we.set_number }} sets × {{ we.reps }} reps @ {{ we.weight_used }} lbs
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
 
         <!-- Add Exercise UI (visible in Edit mode) -->
         <div id="addExerciseSection" class="d-none mt-4">
@@ -77,15 +130,27 @@ editBtn.addEventListener('click', () => {
     addSection.classList.remove('d-none');
     // Reveal the Save form (used when "Save" is clicked)
     saveForm.classList.remove('d-none');
+    document.getElementById('setsForm').classList.remove('d-none');
+    document.getElementById('exerciseList').classList.add('d-none');
+
 });
 
 // When user clicks the "Save" button:
 saveBtn.addEventListener('click', () => {
-    // Convert selected exercise IDs into a JSON string and put them into the hidden input
+    const selected = selectedExerciseIds.length > 0;
+
+    // Add JSON of selected exercises to hidden input
     document.getElementById('selectedExercises').value = JSON.stringify(selectedExerciseIds);
-    // Submit the form to the backend
-    saveForm.submit();
+
+    // Submit set/rep/weight changes
+    document.getElementById('setsForm').submit();
+
+    // Only submit exercise form if new ones were selected
+    if (selected) {
+        saveForm.submit();
+    }
 });
+
 
 // Enable each exercise button to be selectable
 document.querySelectorAll('.exercise-option').forEach(button => {

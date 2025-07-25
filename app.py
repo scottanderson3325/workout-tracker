@@ -76,6 +76,35 @@ def add_exercises_to_workout(workout_id):
 
     return redirect(url_for('view_workout', workout_id=workout.id))
 
+@app.route('/view/<int:workout_id>/update_sets', methods=['POST'])
+def update_sets(workout_id):
+    workout = Workout.query.get_or_404(workout_id)
+
+    # Get all workout_exercise rows for this workout
+    workout_exercises = WorkoutExercise.query.filter_by(workout_id=workout.id).all()
+
+    for we in workout_exercises:
+        try:
+            # Look up the form inputs for this workout_exercise entry
+            set_key = f"set_number_{we.id}"
+            reps_key = f"reps_{we.id}"
+            weight_key = f"weight_used_{we.id}"
+
+            # If the keys are in the form, update the values
+            if set_key in request.form:
+                we.set_number = int(request.form[set_key]) if request.form[set_key] else None
+            if reps_key in request.form:
+                we.reps = int(request.form[reps_key]) if request.form[reps_key] else None
+            if weight_key in request.form:
+                we.weight_used = float(request.form[weight_key]) if request.form[weight_key] else None
+
+        except Exception as e:
+            print(f"❌ Error updating WE ID {we.id}:", e)
+
+    db.session.commit()
+    print(f"✅ Updated sets/reps/weights for Workout {workout.id}")
+    return redirect(url_for('view_workout', workout_id=workout.id))
+
 # 📅 Route: Weekly Schedule Page
 # -------------------------------
 # This route serves two purposes:
